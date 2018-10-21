@@ -34,7 +34,7 @@ python runner.py [mode] --iterative
 ```
 
 ## Apriori minimum support v.s. run time plot
-![]()
+![](https://github.com/andi611/dataMining_apriori_eclat_freqItemsetMining/blob/master/data/plot_apriori.jpeg)
 
 ## Eclat minimum support v.s. run time plot
-![]()
+![](https://github.com/andi611/dataMining_apriori_eclat_freqItemsetMining/blob/master/data/plot_eclat.jpeg)
