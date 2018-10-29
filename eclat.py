@@ -11,7 +11,16 @@
 # IMPORTATION #
 ###############
 import numpy as np
-
+try:
+	import pycuda.gpuarray as gpuarray
+	import pycuda.driver as cuda
+	import pycuda.autoinit
+	from pycuda.compiler import SourceModule
+	CUDA_FLAG = True
+	print("Accelerating Eclat computation with GPU!")
+except:
+	CUDA_FLAG = False
+	print("Failed to import Pycuda! Machine does not support GPU computation.")
 
 ###################################
 # COMPUTE VERTICAL BITVECTOR DATA #
@@ -119,10 +128,12 @@ def compute_LK(LK_, support_list, k, num_trans, min_support):
 """
 class eclat_runner:
 
-	def __init__(self, num_trans, min_support):
+	def __init__(self, num_trans, min_support, use_CUDA):
 		self.num_trans = num_trans
 		self.min_support = min_support
 		self.support_list = {}
+		self.use_CUDA = use_CUDA
+
 
 	def run(self, prefix, supportK):
 		print('Running Eclat in recursive: number of itemsets found:', len(self.support_list), end='\r')
@@ -135,8 +146,14 @@ class eclat_runner:
 
 				suffix = []
 				for itemset_sub, bitvector_sub in supportK:
-					union_bitvector = np.multiply(bitvector, bitvector_sub)
-					union_support = np.sum(union_bitvector) / self.num_trans
+					if self.use_CUDA:
+						bitvector = gpuarray.to_gpu(bitvector.astype(np.float32))
+						bitvector_sub = gpuarray.to_gpu(bitvector_sub.astype(np.float32))
+						union_bitvector = gpuarray.to_gpu((bitvector * bitvector_sub).get())
+						union_support = int(gpuarray.sum(union_bitvector).get()) / self.num_trans
+					else:
+						union_bitvector = np.multiply(bitvector, bitvector_sub)
+						union_support = np.sum(union_bitvector) / self.num_trans
 					if union_support >= self.min_support:
 						suffix.append([itemset_sub, union_bitvector])
 
@@ -170,7 +187,7 @@ def output_handling(support_list):
 			L[-1] = sorted(L[-1])
 			L.append([itemset])
 		else: raise ValueError()
-	L[-1] = sorted(L[-1])
+	if len(L) != 0: L[-1] = sorted(L[-1])
 	L = tuple(L)
 	support_list = dict((tuple(sorted(list(k), key=lambda x: int(x))), v) for k, v in support_list.items())
 	return L, support_list
@@ -189,12 +206,12 @@ def output_handling(support_list):
 		- L: the frequent itemset L, a 3-dimensional list
 		- support_list: a dictionary recording the supports for each itemset in L
 """
-def eclat(data, min_support, iterative=False):
+def eclat(data, min_support, iterative=False, use_CUDA=False):
 
 	num_trans = float(len(data))
 	vb_data, idx2item = compute_vertical_bitvector_data(data)
 	
-	if iterative:
+	if iterative and not use_CUDA:
 		#---iterative method---#
 		L1, support_list = compute_L1(vb_data, idx2item, num_trans, min_support)
 		L = [L1]
@@ -215,7 +232,7 @@ def eclat(data, min_support, iterative=False):
 				support_list.update(supportK)
 		return L, support_list
 
-	else:
+	elif not iterative:
 		#---convert vertical bit vector matrix to dict then to list---#
 		supportK = {}
 		for idx, bit_list in enumerate(vb_data):
@@ -223,11 +240,14 @@ def eclat(data, min_support, iterative=False):
 		supportK = sorted(supportK.items(), key=lambda item: np.sum(item[1]), reverse=True)
 		
 		#---recursive method---#
-		eclat = eclat_runner(num_trans, min_support)
+		if use_CUDA and not CUDA_FLAG: use_CUDA = False
+		eclat = eclat_runner(num_trans, min_support, use_CUDA)
 		eclat.run([], supportK)
 
 		support_list = eclat.get_result()
 		L, support_list = output_handling(support_list)
 
 		return L, support_list
+	else:
+		raise NotImplementedError("Iterative with GPU is not yet implemented!")
 

@@ -28,9 +28,10 @@ def get_config():
 	parser = argparse.ArgumentParser(description='frequent itemset mining argument parser')
 	parser.add_argument('mode', type=str, choices=['apriori', 'eclat', '1', '2'], help='algorithm mode')
 	parser.add_argument('--toy_data', action='store_true', help='use toy data for testing')
+	parser.add_argument('--use_CUDA', action='store_true', help='run eclat with GPU to accelerate computation')
 	parser.add_argument('--iterative', action='store_true', help='run eclat in iterative method, else use the recusrive method')
 	parser.add_argument('--plot', action='store_true', help='Run all the values in the support list and plot runtime')
-	parser.add_argument('--min_support', type=float, default=0.6, help='minimum support of the frequent itemset')
+	parser.add_argument('--min_support', type=float, default=0.1, help='minimum support of the frequent itemset')
 	parser.add_argument('--input_path', type=str, default='./data/data.txt', help='input data path')
 	parser.add_argument('--output_path', type=str, default='./data/output.txt', help='output data path')
 	args = parser.parse_args()
@@ -58,14 +59,14 @@ def read_data(data_path, skip_header=False, toy_data=False):
 #################
 # RUN ALGORITHM #
 #################
-def run_algorithm(data, mode, support, iterative):
+def run_algorithm(data, mode, support, iterative, use_CUDA):
 	if mode == 'apriori':
 		print('Running Apriori algorithm with %f support and data shape: ' % (support), np.shape(data))
 		LK, suppotK = apriori(data, support)
 		return LK, suppotK
 	elif mode == 'eclat':
 		print('Running eclat algorithm with %f support and data shape: ' % (support), np.shape(data))
-		result = eclat(data, support, iterative)
+		result = eclat(data, support, iterative, use_CUDA)
 		return result
 	else:
 		raise NotImplementedError('Invalid algorithm mode.')
@@ -105,7 +106,7 @@ def main():
 	for s in support_list:
 		print('-'*77)
 		start_time = time.time()
-		result = run_algorithm(data, args.mode, s, args.iterative)
+		result = run_algorithm(data, args.mode, s, args.iterative, args.use_CUDA)
 		"""
 			result has len()==2, 
 			result[0]: the 3-dimensional Large K itemset,
