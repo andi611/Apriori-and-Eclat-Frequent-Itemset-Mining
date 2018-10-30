@@ -17,10 +17,8 @@ try:
 	import pycuda.autoinit
 	from pycuda.compiler import SourceModule
 	CUDA_FLAG = True
-	print("Accelerating Eclat computation with GPU!")
 except:
 	CUDA_FLAG = False
-	print("Failed to import Pycuda! Machine does not support GPU computation.")
 
 ###################################
 # COMPUTE VERTICAL BITVECTOR DATA #
@@ -133,6 +131,17 @@ class eclat_runner:
 		self.min_support = min_support
 		self.support_list = {}
 		self.use_CUDA = use_CUDA
+		if self.use_CUDA:
+			self.block = (256, 1, 1)
+			dx, mx = divmod(self.num_trans, self.block[0])
+			dy, my = divmod(0, self.block[1])
+			# self.grid = (int((dx + (mx>0)) * self.block[0]), int((dy + (my>0)) * self.block[1]))
+			self.grid = (1, 1)
+			print("Accelerating Eclat computation with GPU!")
+			print("Using Block =", self.block)
+			print("Using Grid =", self.grid)
+		else:
+			print("Failed to import Pycuda! Machine does not support GPU computation.")
 
 
 	def run(self, prefix, supportK):
@@ -147,10 +156,24 @@ class eclat_runner:
 				suffix = []
 				for itemset_sub, bitvector_sub in supportK:
 					if self.use_CUDA:
-						bitvector = gpuarray.to_gpu(bitvector.astype(np.float32))
-						bitvector_sub = gpuarray.to_gpu(bitvector_sub.astype(np.float32))
-						union_bitvector = gpuarray.to_gpu((bitvector * bitvector_sub).get())
-						union_support = int(gpuarray.sum(union_bitvector).get()) / self.num_trans
+						# bitvector = gpuarray.to_gpu(bitvector.astype(np.float32))
+						# bitvector_sub = gpuarray.to_gpu(bitvector_sub.astype(np.float32))
+						# union_bitvector = gpuarray.to_gpu((bitvector * bitvector_sub).get())
+						# union_support = int(gpuarray.sum(union_bitvector).get()) / self.num_trans
+
+						bitvector = bitvector.astype(np.float32)
+						bitvector_sub = bitvector_sub.astype(np.float32)
+						union_bitvector = np.zeros_like(bitvector)
+						mod = SourceModule("""__global__ void multiply_element(float *dest, float *a, float *b, int len) {
+											const int idx = threadIdx.x + blockDim.x * blockIdx.x;
+											dest[idx] = a[idx] * b[idx];
+										   }""")
+						multiply = mod.get_function("multiply_element")
+
+						multiply(cuda.Out(union_bitvector), cuda.In(bitvector), cuda.In(bitvector_sub), cuda.In(np.int32(self.num_trans)),
+								 block=self.block,
+								 grid=self.grid)
+						union_support = gpuarray.sum(gpuarray.to_gpu(union_bitvector)).get() / self.num_trans
 					else:
 						union_bitvector = np.multiply(bitvector, bitvector_sub)
 						union_support = np.sum(union_bitvector) / self.num_trans

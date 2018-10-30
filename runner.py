@@ -31,7 +31,7 @@ def get_config():
 	parser.add_argument('--use_CUDA', action='store_true', help='run eclat with GPU to accelerate computation')
 	parser.add_argument('--iterative', action='store_true', help='run eclat in iterative method, else use the recusrive method')
 	parser.add_argument('--plot', action='store_true', help='Run all the values in the support list and plot runtime')
-	parser.add_argument('--min_support', type=float, default=0.1, help='minimum support of the frequent itemset')
+	parser.add_argument('--min_support', type=float, default=0.6, help='minimum support of the frequent itemset')
 	parser.add_argument('--input_path', type=str, default='./data/data.txt', help='input data path')
 	parser.add_argument('--output_path', type=str, default='./data/output.txt', help='output data path')
 	args = parser.parse_args()
@@ -62,8 +62,8 @@ def read_data(data_path, skip_header=False, toy_data=False):
 def run_algorithm(data, mode, support, iterative, use_CUDA):
 	if mode == 'apriori':
 		print('Running Apriori algorithm with %f support and data shape: ' % (support), np.shape(data))
-		LK, suppotK = apriori(data, support)
-		return LK, suppotK
+		result = apriori(data, support)
+		return result
 	elif mode == 'eclat':
 		print('Running eclat algorithm with %f support and data shape: ' % (support), np.shape(data))
 		result = eclat(data, support, iterative, use_CUDA)
@@ -76,6 +76,7 @@ def run_algorithm(data, mode, support, iterative, use_CUDA):
 # WRITE RESULT #
 ################
 def write_result(result, result_path):
+	if len(result[0]) == 0: print('Found 0 frequent itemset, please try again with a lower minimum support value!')
 	with open(result_path, 'w', encoding='big5') as file:
 		file_data = csv.writer(file, delimiter=',', quotechar='\r')
 		for itemset_K in result[0]:
