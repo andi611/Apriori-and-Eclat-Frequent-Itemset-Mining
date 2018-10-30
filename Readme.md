@@ -76,5 +76,6 @@ python runner.py [mode] --iterative
 * [PyCUDA tutorial documentation](https://documen.tician.de/pycuda/tutorial.html#bonus-abstracting-away-the-complications)
 * [PyCUDA array documentation](https://documen.tician.de/pycuda/array.html)
 * [PyCUDA tutorial](https://blog.csdn.net/u012915829/article/details/72831801)
+* [Figure: The CUDA parallel thread hierarchy.](https://devblogs.nvidia.com/even-easier-introduction-cuda/cuda_indexing/)
 * ![](https://github.com/andi611/DataMining_Apriori_Eclat_FreqItemsetMining/blob/master/data/cuda_indexing.png)
-	Figure: The CUDA parallel thread hierarchy. CUDA executes kernels using a grid of blocksof threads. This figure shows the common indexing pattern used in CUDA programs using the CUDA keywords gridDim.x (the number of thread blocks), blockDim.x (the number of threads in each block), blockIdx.x (the index the current block within the grid), and threadIdx.x (the index of the current thread within the block).
+	 CUDA executes kernels using a grid of blocksof threads. This figure shows the common indexing pattern used in CUDA programs using the CUDA keywords gridDim.x (the number of thread blocks), blockDim.x (the number of threads in each block), blockIdx.x (the index the current block within the grid), and threadIdx.x (the index of the current thread within the block).
