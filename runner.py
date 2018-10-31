@@ -187,18 +187,21 @@ def main():
 		for xy in zip(experiment_list, duration):
 			ax.annotate('(%s, %.5s)' % xy, xy=xy, textcoords='data')
 		plt.ylabel('execution time (seconds)')
-		if args.plot_support or args.plot_support_gpu or args.compare_gpu:
+		if args.plot_support or args.plot_support_gpu:
 			plt.xlabel('minimum support')
-			title = args.mode + '_support_vs_execution_time'
+			title = 'plot_' + args.mode + '_support_vs_execution_time'
+		elif args.compare_gpu:
+			plt.xlabel('minimum support')
+			title = 'plot_compare_gpu'
 		elif args.plot_block:
 			plt.xlabel('block number')
-			title = args.mode + '_block_vs_execution_time'
+			title = 'plot_' + args.mode + '_block_vs_execution_time'
 		elif args.plot_thread:
 			plt.xlabel('thread number')
-			title = args.mode + '_thread_vs_execution_time'
+			title = 'plot_' + args.mode + '_thread_vs_execution_time'
 		plt.title(args.mode)
 		plt.grid()
-		fig.savefig('./data/' + title + '_plot.jpeg')
+		fig.savefig('./data/' + title + '.jpeg')
 	else:
 		done = write_result(result, args.output_path)
 

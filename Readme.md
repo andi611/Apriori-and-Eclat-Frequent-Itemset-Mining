@@ -46,7 +46,7 @@ python3 runner.py eclat
 python3 runner.py [mode] --min_support 0.6 --input_path ./data/data.txt --output_path ./data/output.txt
 ```
 
-* To run Eclat with **GPU acceleration**:
+* To run Eclat with **GPU acceleration** (Suggested dataset: data2.txt):
 ```
 python3 runner.py eclat --min_support 0.02 --input_path ./data/data2.txt --use_CUDA
 ```
@@ -54,10 +54,10 @@ python3 runner.py eclat --min_support 0.02 --input_path ./data/data2.txt --use_C
 * To plot run time v.s. different experiment values:
 ```
 python runner.py [mode] --plot_support
-python runner.py [mode] --plot_support_gpu --use_CUDA
-python runner.py [mode] --compare_gpu --use_CUDA
-python runner.py [mode] --plot_thread --use_CUDA
-python runner.py [mode] --plot_block --use_CUDA
+python runner.py [mode] --plot_support_gpu --input_path ./data/data2.txt --use_CUDA
+python runner.py [mode] --compare_gpu --input_path ./data/data2.txt --use_CUDA
+python runner.py [mode] --plot_thread --input_path ./data/data2.txt --use_CUDA
+python runner.py [mode] --plot_block --input_path ./data/data2.txt --use_CUDA
 ```
 
 * To test with toy data:
@@ -79,7 +79,7 @@ python runner.py [mode] --iterative
 ![](https://github.com/andi611/dataMining_apriori_eclat_freqItemsetMining/blob/master/data/plot_eclat.jpeg)
 
 ## Eclat minimum support v.s. run time plot (data2.txt w/ GPU version)
-![]()
+![](https://github.com/andi611/DataMining_Apriori_Eclat_FreqItemsetMining/blob/master/data/plot_compare_gpu.jpeg)
 
 ## Reference
 * [PyCUDA tutorial documentation](https://documen.tician.de/pycuda/tutorial.html)
