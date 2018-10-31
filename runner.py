@@ -122,14 +122,9 @@ def main():
 	if args.use_CUDA and args.mode != 'eclat':
 		raise NotImplementedError()
 	assert assert_at_most_one_is_true(args.plot_support, args.plot_support_gpu, args.plot_block, args.plot_thread, args.compare_gpu)
-	try: assert args.use_CUDA and args.plot_support_gpu
-	except: 
-		try: assert args.use_CUDA and args.compare_gpu
-		except: 
-			try: assert args.use_CUDA and args.plot_block
-			except: 
-				try: assert args.use_CUDA and args.plot_thread
-				except: raise ValueError()
+	if args.plot_support_gpu or args.compare_gpu or args.plot_block or args.plot_thread:
+		try: assert args.use_CUDA
+		except: raise ValueError('Must use Cuda for these experiments!')
 				
 	#---ploting mode handling---#
 	if not args.plot_support and not args.plot_support_gpu and not args.compare_gpu: 
