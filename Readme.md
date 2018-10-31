@@ -2,6 +2,12 @@
 **Implementation of the Apriori and Eclat algorithms, two of the best-known basic algorithms for mining frequent item sets in a set of transactions, implementation in Python.**
 
 
+## Implementaions
+* Apriori algorithm
+* Eclat algorithm (recursive method w/ **GPU acceleration** support)
+* Eclat algorithm (iterative method)
+
+
 ## Requirements
 * < Python 3.6+ >
 * **< NVIDIA CUDA 9.0 >** (Optional)
@@ -23,11 +29,9 @@ sudo pip3 install pycuda
 4. sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 10
 ```
 
-
-## Implementaions
-* Apriori algorithm
-* Eclat algorithm (recursive method w/ **GPU acceleration** support)
-* Eclat algorithm (iterative method)
+## Datasets:
+* **./data/data.txt**: suggested min support range: [0.6 0.02]
+* **./data/data2.txt**: a harder dataset, only eclat can find results in reasonable time. Suggested min support range: [0.1 0.01]
 
 
 ## Usage
@@ -37,20 +41,23 @@ python3 runner.py apriori
 python3 runner.py eclat
 ```
 
-* To run Eclat with GPU acceleration:
-```
-python3 runner.py eclat --use_CUDA --min_support 0.05 --input_path ./data/data2.txt
-```
-where 'data2.txt' is a harder dataset that requires more computational power.
-
 * Other arguments can be given by:
 ```
 python3 runner.py [mode] --min_support 0.6 --input_path ./data/data.txt --output_path ./data/output.txt
 ```
 
-* To plot run time v.s. different minimum support value:
+* To run Eclat with **GPU acceleration**:
 ```
-python runner.py [mode] --plot
+python3 runner.py eclat --min_support 0.02 --input_path ./data/data2.txt --use_CUDA
+```
+
+* To plot run time v.s. different experiment values:
+```
+python runner.py [mode] --plot_support
+python runner.py [mode] --plot_support_gpu --use_CUDA
+python runner.py [mode] --compare_gpu --use_CUDA
+python runner.py [mode] --plot_thread --use_CUDA
+python runner.py [mode] --plot_block --use_CUDA
 ```
 
 * To test with toy data:
@@ -71,6 +78,8 @@ python runner.py [mode] --iterative
 ## Eclat minimum support v.s. run time plot
 ![](https://github.com/andi611/dataMining_apriori_eclat_freqItemsetMining/blob/master/data/plot_eclat.jpeg)
 
+## Eclat minimum support v.s. run time plot (data2.txt w/ GPU version)
+![]()
 
 ## Reference
 * [PyCUDA tutorial documentation](https://documen.tician.de/pycuda/tutorial.html)
