@@ -132,7 +132,7 @@ def main():
 	elif args.mode == 'apriori': 
 		experiment_list = (0.35, 0.3, 0.25, 0.2)
 	elif args.mode == 'eclat' and args.plot_support_gpu: 
-		experiment_list = (0.1, 0.08, 0.06, 0.04, 0.02)
+		experiment_list = (0.001, 0.0008, 0.0006, 0.0004, 0.0002)
 	elif args.mode == 'eclat' and args.compare_gpu: 
 		experiment_list = (0.1, 0.08, 0.06, 0.04, 0.02, 0.01)
 	elif args.mode == 'eclat': 
