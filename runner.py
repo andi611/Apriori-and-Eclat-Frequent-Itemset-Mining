@@ -178,7 +178,7 @@ def main():
 			for xy in zip(experiment_list, duration2):
 				ax.annotate('(%s, %.5s)' % xy, xy=xy, textcoords='data')
 		else:
-			plt.plot(experiment_list, duration, 'r')
+			plt.plot(experiment_list, duration, marker='o')
 		for xy in zip(experiment_list, duration):
 			ax.annotate('(%s, %.5s)' % xy, xy=xy, textcoords='data')
 		plt.ylabel('execution time (seconds)')
