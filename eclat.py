@@ -143,7 +143,7 @@ class eclat_runner:
 								dest[idx] = a[idx] * b[idx];
 							   }""")
 			self.multiply = mod.get_function("multiply_element")
-			self.block = (block, block, 1)
+			self.block = (block, thread, 1)
 			dx, mx = divmod(self.num_trans, self.block[0])
 			dy, my = divmod(1, self.block[1])
 			self.grid = (int(dx + (mx>0)), int(dy + (my>0)))
