@@ -80,6 +80,7 @@ python runner.py [mode] --iterative
 
 ## Eclat minimum support v.s. run time plot **(data2.txt w/ GPU version)**
 ![](https://github.com/andi611/DataMining_Apriori_Eclat_FreqItemsetMining/blob/master/data/plot_eclat_support_vs_execution_time.jpeg)
+![](https://github.com/andi611/DataMining_Apriori_Eclat_FreqItemsetMining/blob/master/data/plot_eclat_support_vs_execution_time2.jpeg)
 
 ## Eclat w/ GPU and w/o GPU comparison plot **(data2.txt w/ GPU version)**
 ![](https://github.com/andi611/DataMining_Apriori_Eclat_FreqItemsetMining/blob/master/data/plot_compare_gpu.jpeg)
