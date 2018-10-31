@@ -293,8 +293,6 @@ def eclat(data, min_support, iterative=False, use_CUDA=False, block=None, thread
 		supportK = []
 		for idx, bit_list in enumerate(vb_data):
 			supportK.append((idx2item[idx], bit_list))
-		# if use_CUDA: supportK = sorted(supportK, key=lambda x: int(x[0]))
-		# else: supportK = sorted(supportK, key=lambda x: np.sum(x[1]), reverse=True)
 		
 		#---eclat class runner---#
 		eclat = eclat_runner(num_trans, min_support, use_CUDA, block, thread, use_optimal=True)
