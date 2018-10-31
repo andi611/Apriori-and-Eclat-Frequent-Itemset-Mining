@@ -286,8 +286,9 @@ def eclat(data, min_support, iterative=False, use_CUDA=False, block=None, thread
 		vb_data, idx2item = compute_vertical_bitvector_data(data, use_CUDA=use_CUDA)
 
 		#---pre allocate memory---#
-		N = np.int32(vb_data.shape[1])
-		GPU_memory = cuda.mem_alloc(N.nbytes)
+		if use_CUDA:
+			N = np.int32(vb_data.shape[1])
+			GPU_memory = cuda.mem_alloc(N.nbytes)
 
 		#---convert vertical bit vector matrix to dict then to list---#
 		supportK = []
