@@ -31,7 +31,7 @@ sudo pip3 install pycuda
 
 ## Datasets:
 * **./data/data.txt**: suggested min support range: [0.6 0.02]
-* **./data/data2.txt**: a harder dataset, only eclat can find results in reasonable time. Suggested min support range: [0.1 0.01]
+* **./data/data2.txt**: a harder dataset, only eclat can find results in reasonable time. Suggested min support range: [0.1 0.0002]
 
 
 ## Usage
